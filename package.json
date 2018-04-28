@@ -1,0 +1,12 @@
+{
+    "name": "plexstorm_chat",
+    "main": "www/index.html",
+    "version": "0.0.1",
+    "window": {
+        "title": "Plexstorm Chat",
+        "toolbar": false,
+        "width": 350,
+        "height": 260
+    },
+    "chromium-args" : "--disable-gpu"
+}
