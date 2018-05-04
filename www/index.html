@@ -5,6 +5,7 @@
         <title>Plexstorm Chat Room Capture</title>
         <style>
             html, body, webview {
+                font-family: Microsoft JhengHei,helvetica,arial,sans-serif; 
                 width: 100%;
                 height: 100%; 
                 overflow:hidden;
@@ -16,103 +17,32 @@
         </style>
     </head>
     <body>
-    <h1 id ="infoText">PlexStorm Chat Room<br>Capture V0.0.2<br>by a161803398</h1>
-    <button id="loadChatBtn"><h1>Start Capturing</h1></button>
     <h1 id ="indicator"></h1>
+    <div id ="control">
+        <h1 id ="infoText">PlexStormChat Room Capture V0.1.0<br>by a161803398</h1>
+        <button id="loadChatBtn"><h2>Start Capturing</h2></button>
+        <br>
+        <br>
+        Test donation popup:
+        <input id="donateSelect" type="number" min="0" value="0" style="width: 50px;">
+        <button id="donateTestBtn">Test</button>
+        <br>
+        Test subscription popup:
+        <input id="subscriptSelect" type="number" min="0" value="0" style="width: 50px;">
+        <button id="subscriptTestBtn">Test</button>
+        <br>
+        <h2>
+            Please copy the fellowing url to <br>OBS Studio CLR Browser Source<br><br>
+            Chat Room: http://localhost:1069<br>
+            Donation: http://localhost:1069/donate<br>
+            Subscription: http://localhost:1069/subscript<br>
+            <br>
+            The chat logs will be saved in the chat_logs folder.
+        </h2>
+    </div>
     </body>
-    <script>
-
-        const toInject = ()=> {
-            const form = document.getElementsByTagName('form')[0];
-            if(typeof form != 'undefined'){
-                form.submit();
-            }
-            
-            const chatCol = document.getElementsByClassName('chat-column')[0];
-            if(typeof chatCol != 'undefined'){
-                document.removeChild(document.documentElement);
-                const body = document.createElement("body");
-
-                document.appendChild(body);
-
-                body.appendChild(chatCol);
-                
-                const chatSection = document.getElementsByClassName('chat')[0];
-                chatSection.style.height = "100%";
-                
-                const sending = document.getElementsByClassName('sending-area')[0];
-                const ranking = document.getElementsByClassName('ranking')[0];
-                sending.parentElement.removeChild(sending);
-                ranking.parentElement.removeChild(ranking);
-
-                
-                const style = document.createElement("style");
-                body.appendChild(style);
-                style.sheet.insertRule("html, body {font-family:Microsoft JhengHei,helvetica,arial,sans-serif;overflow:hidden;background-color: #000000;font-weight: bold;}");
-                style.sheet.insertRule("svg, .timestamp, .ps__scrollbar-x-rail, .ps__scrollbar-y-rail, .hint {display:none;}");
-                style.sheet.insertRule(".row p, .row div {display:inline;}");
-                style.sheet.insertRule(".row {color: #ffffff;font-size: 20px;}");
-                style.sheet.insertRule(".row.type-tip {color: #ffff00;}");
-                style.sheet.insertRule(".type-normal .color-male {color: #00ffff;}");
-                style.sheet.insertRule(".type-normal .color-female {color: #ff69b4;}");
-                style.sheet.insertRule(".type-normal .color-trans {color: #ff00ff;}");
-                style.sheet.insertRule(".type-normal.type-moderator .color-male {color: #ffff00;}");
-                style.sheet.insertRule(".type-normal.type-moderator .color-female {color: #ff4500;}");
-                style.sheet.insertRule(".type-normal.type-moderator .color-trans {color: #ffa07a}");
-
-                const msgArea = document.getElementsByClassName('message-area')[0];
-                const placehold = document.createElement("div");
-                placehold.classList.add("row");
-                placehold.innerHTML = "Connect to chat room successfully!!";
-                msgArea.appendChild(placehold);
-                
-                const observer = new MutationObserver((m)=>{
-                   window.scrollBy(0,1000);
-                });
-
-                observer.observe(chatCol, {
-                    childList: true,
-                    subtree: true
-                });
-            }
-        };
     
-        const webview = document.createElement('webview');
-        document.body.appendChild(webview); 
-        const indicator = document.getElementById('indicator');
-
-        webview.addEventListener('loadstart', (e) => {
-            indicator.style.display = '';
-            indicator.innerText = 'Please Wait...';
-        });
-
-        webview.addEventListener('loadredirect', (e) => {
-            if(e.newUrl === 'https://plexstorm.com/'){
-                alert('Cannot capture chat room, please make sure that the streaming is started!!');
-                indicator.style.display = 'none';
-                infoText.style.display = '';
-                loadChatBtn.style.display = '';
-                webview.src = 'about:blank';
-            }
-        });
-        //webview.addEventListener('loadstop', (e) => {
-        webview.addEventListener('loadcommit', (e) => {
-          indicator.style.display = 'none';
-          webview.executeScript({ code: '(' + toInject.toString() + ')();' });
-        });
-
-        
-        const loadChatBtn = document.getElementById('loadChatBtn');
-        const infoText = document.getElementById('infoText');
-        
-        loadChatBtn.addEventListener('click', (e)=>{
-            const val = prompt("Please input your PlexStorm streaming url(Make sure that the streaming is started)", "https://plexstorm.com/stream/hornydragon");
-            if(val !== null){
-                infoText.style.display = 'none';
-                loadChatBtn.style.display = 'none';
-                webview.src = val;
-            }
-        });
-        
-    </script>
+    <script src="sendMsg.js"></script>
+    <script src="decodeMsg.js"></script>
+    <script src="index.js"></script>
 </html>
