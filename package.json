@@ -2,12 +2,15 @@
     "name": "plexstorm_chat",
     "node-main": "www/server.js",
     "main": "www/index.html",
-    "version": "0.1.0",
+    "version": "0.3.2",
     "window": {
         "title": "",
         "toolbar": false,
-        "width": 600,
+        "width": 450,
         "height": 600
     },
-    "chromium-args" : "--disable-gpu"
+    "chromium-args": "--disable-gpu",
+    "dependencies": {
+        "websocket": "^1.0.26"
+    }
 }

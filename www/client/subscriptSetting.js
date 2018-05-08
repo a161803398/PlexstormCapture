@@ -1,8 +1,8 @@
 const subscriptTemplate = [
 
     {
-        text: "{USER_ID} Subscript this Chanel.",
-        img: "ShutUp.gif",
+        text: "感謝{USER_ID}的訂閱",
+        img: "shutUp.gif",
         sound: "shutUp.mp3"
     },
     

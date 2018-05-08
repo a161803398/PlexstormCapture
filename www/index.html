@@ -1,48 +1,64 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <title>Plexstorm Chat Room Capture</title>
-        <style>
-            html, body, webview {
-                font-family: Microsoft JhengHei,helvetica,arial,sans-serif; 
-                width: 100%;
-                height: 100%; 
-                overflow:hidden;
-                text-align: center;
-                margin: 0 0 0 0;
-                padding: 0 0 0 0;
-            }
-            
-        </style>
-    </head>
-    <body>
-    <h1 id ="indicator"></h1>
-    <div id ="control">
-        <h1 id ="infoText">PlexStormChat Room Capture V0.1.0<br>by a161803398</h1>
-        <button id="loadChatBtn"><h2>Start Capturing</h2></button>
+
+<head>
+    <meta charset="UTF-8">
+    <title>Plexstorm 聊天室擷取器</title>
+    <link type="text/css" rel="stylesheet" href="client/chatStyle.css">
+    <link type="text/css" rel="stylesheet" href="index.css">
+
+</head>
+
+<body>
+    <div id="control">
+        <h1 id="indicator" style="display:none;"><img id="loadingImg" src="loading.gif" alt="Loading"><br>擷取中請稍後...</h1>
+        <h2 id="infoText" class="hideOnCapture">PlexStorm聊天室擷取器V0.3.2<br>by a161803398</h2>
+
+
+        <button id="loadChatBtn" class="hideOnCapture"><h2>開始擷取</h2></button>
+        <br> 測試第
+        <input id="donateSelect" type="number" min="0" value="0" style="width: 50px;"> 張贊助圖片
+        <button id="donateTestBtn">測試贊助</button><br> 測試第
+        <input id="subscriptSelect" type="number" min="0" value="0" style="width: 50px;"> 張訂閱圖片
+        <button id="subscriptTestBtn">測試訂閱</button>
+        
+        
         <br>
+        每贊助1PD就播放
+        <input id="playTimeSelect" type="number" min="0" value="500" style="width: 50px;"> ms
         <br>
-        Test donation popup:
-        <input id="donateSelect" type="number" min="0" value="0" style="width: 50px;">
-        <button id="donateTestBtn">Test</button>
-        <br>
-        Test subscription popup:
-        <input id="subscriptSelect" type="number" min="0" value="0" style="width: 50px;">
-        <button id="subscriptTestBtn">Test</button>
-        <br>
-        <h2>
-            Please copy the fellowing url to <br>OBS Studio CLR Browser Source<br><br>
-            Chat Room: http://localhost:1069<br>
-            Donation: http://localhost:1069/donate<br>
-            Subscription: http://localhost:1069/subscript<br>
-            <br>
-            The chat logs will be saved in the chat_logs folder.
-        </h2>
+        <button id="musicDonateTestBtn">測試點歌</button><button id="stopBtn">停止贊助訊息</button><br>
+        <table style="width:100%;" border="0">
+            <tr>
+                <td style="text-align:right;width:50%">
+                    特效音量：
+                    <input id="sfxVolumeRange" type="range" min="0" max="100" value="100"><br>
+                    語音音量：
+                    <input id="voiceVolumeRange" type="range" min="0" max="100" value="100"><br>
+                    點歌音量：
+                    <input id="musicVolumeRange" type="range" min="0" max="100" value="100"><br>
+                </td>
+                <td style="text-align:left;width:50%">
+                    <input type="checkbox" id="readMsgChk" checked>
+                    <label for="readMsgChk">念出贊助或訂閱前留言</label><br>
+                    <input type="checkbox" id="playYTChk" checked>
+                    <label for="playYTChk">播放YouTube點歌</label><br>
+                    <input type="checkbox" id="alwaysOnTopChk">
+                    <label for="alwaysOnTopChk">最上層顯示視窗</label>
+                </td>
+            </tr>
+        </table>
+
+        <h3 class="hideOnCapture">
+            聊天室網址: http://localhost:1069<br> 贊助圖網址: http://localhost:1069/donate<br> 訂閱圖網址: http://localhost:1069/subscript<br> 聊天室紀錄儲存於程式的chat_logs資料夾中
+        </h3>
+        <input type="checkbox" id="autoScrollChk" checked>
+        <label for="autoScrollChk">自動捲動下方訊息</label>
     </div>
-    </body>
-    
-    <script src="sendMsg.js"></script>
-    <script src="decodeMsg.js"></script>
-    <script src="index.js"></script>
+    <div id="content"></div>
+</body>
+<script src="client/wsMsg.js"></script>
+<script src="decodeMsg.js"></script>
+<script src="index.js"></script>
+
 </html>

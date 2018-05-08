@@ -1,6 +1,26 @@
-var http = require("http");
-var url = require("url");
-var fs = require('fs');
+let http = require("http");
+let url = require("url");
+let fs = require('fs');
+
+let setting = {
+    alwaysOnTop: false,
+    readMsg: true,
+    playYT: true,
+    playTimeUnit: 500,
+    autoScroll: true,
+    sfxVolume: 100,
+    voiceVolume: 100,
+    musicVolume: 100
+};
+
+function loadSetting(){
+    if(typeof localStorage !== 'undefined' && typeof localStorage['setting'] !== 'undefined'){
+        const prevSetting = JSON.parse(localStorage['setting']);
+        for(let key in prevSetting){
+            setting[key] = prevSetting[key];
+        }
+    }        
+}
 
 const contentMap = {
     "htm": "text/html",
@@ -14,25 +34,26 @@ const contentMap = {
     "mp3": "audio/mpeg3",
     "wav": "audio/wav",
     "js": "application/javascript",
-    "json": "application/json"
+    "json": "application/json",
+    "css": "text/css"
 }
 
 http.createServer(function(request, response) {
-    var pathname = url.parse(request.url).pathname.substr(1); //remove left '/'
+    let pathname = url.parse(request.url).pathname.substr(1); //remove left '/'
     
     if(pathname == ""){
         pathname = "index.html";
     }    
 
-    var splitPath = pathname.split(".");
+    let splitPath = pathname.split(".");
     if(splitPath.length <= 1){
         pathname += '.html';
         splitPath.push('html');
     }
     
-    var contentName = splitPath[splitPath.length - 1];
+    let contentName = splitPath[splitPath.length - 1];
 
-    var contentType = contentMap[contentName];
+    let contentType = contentMap[contentName];
     
     if(typeof contentType == 'undefined'){
         contentType = "text/plain";
@@ -78,29 +99,31 @@ function logToFile(user, msg){
 }
 
 // Port where we'll run the websocket server
-var webSocketsServerPort = 1337;
+let webSocketsServerPort = 1337;
 
-// websocket and http servers
-var webSocketServer = require('websocket').server;
-var http = require('http');
+// websocket servers
+let webSocketServer = require('websocket').server;
+
 // list of currently connected clients (users)
-var clients = [];
+let clients = [];
 
 
 /**
  * HTTP server
  */
-var server = http.createServer(function(request, response) {
+let server = http.createServer(function(request, response) {
     // Not important for us. We're writing WebSocket server, not HTTP server
 });
 server.listen(webSocketsServerPort, function() {
     console.log((new Date()) + " Server is listening on port " + webSocketsServerPort);
 });
 
+loadSetting(); //try to loadSetting
+
 /**
  * WebSocket server
  */
-var wsServer = new webSocketServer({
+let wsServer = new webSocketServer({
     // WebSocket server is tied to a HTTP server. WebSocket request is just
     // an enhanced HTTP request. For more info http://tools.ietf.org/html/rfc6455#page-6
     httpServer: server
@@ -111,12 +134,22 @@ var wsServer = new webSocketServer({
 wsServer.on('request', function(request) {
     console.log((new Date()) + ' Connection from origin ' + request.origin + '.');
 
-    var connection = request.accept(null, request.origin); //Same origin policy
-    var index = clients.push(connection) - 1; //current client index
+    let connection = request.accept(null, request.origin); //Same origin policy
+    let index = clients.push(connection) - 1; //current client index
 
     console.log((new Date()) + ' Connection accepted.');
 
-    clients[index].sendUTF(JSON.stringify({ type:'systemMsg', msgText: 'success'}));
+    clients[index].sendUTF(JSON.stringify({ type:'systemMsg', msgText: 'success'})); //send welcome message
+    
+    loadSetting(); //update volume info
+    
+    clients[index].sendUTF(JSON.stringify({ //send volume info to client
+        type: 'action', 
+        toDo: 'setVolume', 
+        sfxVolume: setting.sfxVolume,
+        voiceVolume: setting.voiceVolume,
+        musicVolume: setting.musicVolume
+    }));   
     
     // user sent some message
     connection.on('message', function(message) {
@@ -124,17 +157,17 @@ wsServer.on('request', function(request) {
             console.log((new Date()) + ' Received Message: ' + message.utf8Data);
             
             // broadcast message to all connected clients
-            for (var i = 0; i < clients.length; i++) {
+            for (let i = 0; i < clients.length; i++) {
                 clients[i].sendUTF(message.utf8Data);
-            }            
+            }
             try {
                 const jsonObj = JSON.parse(message.utf8Data);
-                logToFile(jsonObj.userName, jsonObj.msgText);
+                if(jsonObj.type == 'chat'){
+                    logToFile(jsonObj.userName, jsonObj.msgText);
+                }
             } catch (e) {
                 logToFile('System Error ', e);
-            }
-            
-
+            }                
         }
     });
 

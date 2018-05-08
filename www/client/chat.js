@@ -17,38 +17,50 @@ window.addEventListener("load", ()=> {
     function removeOldMsg(){
         window.scrollBy(0,1000);
         /*
-        while(content.offsetHeight > window.innerHeight){
+        while((content.offsetTop + content.offsetHeight) > window.innerHeight){            
             content.removeChild(content.firstChild);
-        }      */  
+        }*/
     }
     
-    function addMsg(msg, userName, sex, type){
+    function addMsg(jsonMsg){
+        if(jsonMsg.type != 'chat') return;
+        
         const newRow = document.createElement("div");
         newRow.classList.add("row");
         newRow.classList.add("type-normal");
         
-        if(typeof userName == "undefined"){
-            newRow.innerHTML = '<p>' + msg + '</p>'; //message only
+        if(typeof jsonMsg.userName == "undefined"){
+            newRow.innerHTML = '<p>' + jsonMsg.msgText + '</p>'; //message only
         }else{
-            newRow.classList.add(userTypeList[type]);
-            newRow.innerHTML = '<div class="' + sexList[sex] + '">' + userName + '</div>' + '<p>: ' + msg + '</p>';
+            newRow.classList.add(userTypeList[jsonMsg.msgType]);
+            newRow.innerHTML = '<div class="' + sexList[jsonMsg.userSex] + '">' + jsonMsg.userName + '</div>' + '<p>: ' + jsonMsg.msgText + '</p>';
         }
         content.appendChild(newRow);
-        
-        
         removeOldMsg();
     }
     
     setUpWs((jsonMsg)=>{
         if(jsonMsg.type == 'systemMsg'){
             if(jsonMsg.msgText == 'success'){
-                addMsg("Connected to local server.");
+                addMsg({
+                    type: 'chat',
+                    msgType: 2, 
+                    userName: '系統', 
+                    userSex: 0,
+                    msgText: '已連線到本機伺服器。'
+                });
             }
-        }else{
-            addMsg(jsonMsg.msgText, jsonMsg.userName, jsonMsg.userSex, jsonMsg.msgType);
+        }else{            
+            addMsg(jsonMsg);
         }
     }, (e)=>{
-        addMsg("Disconnected from local server!");
+        addMsg({
+            type: 'chat',
+            msgType: 2, 
+            userName: '系統', 
+            userSex: 0,
+            msgText: '已斷開與本機伺服器間連線。'
+        });
     });
     
     
