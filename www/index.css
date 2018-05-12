@@ -19,6 +19,23 @@ html, body {
     overflow-y:scroll;
 }   
 
+#loadChatBtn{
+    font-size: 20px;
+    font-weight: bold;
+}
+#infoText{
+    font-size: 25px;
+    font-weight: bold;
+}
+#linkInfo{
+    font-size: 18px;
+    font-weight: bold;
+}
+
+#languageSelect{
+    width: 100px;
+    margin: 2px;
+}
 
 input[type=range] {
     -webkit-appearance: none;

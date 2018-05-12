@@ -1,9 +1,9 @@
-const speakVoice = "Chinese Female";
 const donateBuffer = [];
 
 const donateDiv = document.getElementById("donateDiv");
 const donateInfo = document.getElementById("donateInfo");
 const donateImg = document.getElementById("donateImg");
+const connectHint = document.getElementById("connectHint");
 
 const hasVoiceSupport = responsiveVoice.voiceSupport();
 let curDonateSfx = null;
@@ -11,7 +11,7 @@ let curDonateSfx = null;
 let sfxVolume = 100, voiceVolume = 100;
 
 if(hasVoiceSupport){
-    responsiveVoice.speak("", speakVoice);  //speak empty message first to reduce latency
+    responsiveVoice.speak("", curLang.speakVoice);  //speak empty message first to reduce latency
 }
 
 function endDonate(){
@@ -35,7 +35,7 @@ function showDonate(userId, toShow, preMsg){
     curDonateSfx.addEventListener('ended', ()=> { 
         curDonateSfx = null;    
         if(hasVoiceSupport && preMsg != ""){                 
-            responsiveVoice.speak(preMsg, speakVoice, {
+            responsiveVoice.speak(preMsg, curLang.speakVoice, {
             volume: voiceVolume / 100,    
             onend: ()=>{
                 setTimeout(endDonate, 1000);            
@@ -60,19 +60,34 @@ function pushDonate(userId, toShow, preMsg){
     } //else wait until pre-donation finished
 }
 
+function setVolume(jsonMsg){
+    sfxVolume = jsonMsg.sfxVolume;
+    voiceVolume = jsonMsg.voiceVolume;
+    if(curDonateSfx != null){
+        curDonateSfx.volume = sfxVolume / 100;
+    }     
+}
+
+updateUiLang();
+
 setUpWs((jsonMsg)=>{
-    if(jsonMsg.type == 'chat' && jsonMsg.msgType == 4){
-        pushDonate(jsonMsg.userName, jsonMsg.rndNum % subscriptTemplate.length, jsonMsg.preMsg);
+    if(jsonMsg.type == 'chat'){
+        if(jsonMsg.msgType == 4){
+            pushDonate(jsonMsg.userName, jsonMsg.rndNum % subscriptTemplate.length, jsonMsg.preMsg);
+        }
     }else if(jsonMsg.type == 'action'){
-        if(jsonMsg.toDo == 'setVolume'){
-            sfxVolume = jsonMsg.sfxVolume;
-            voiceVolume = jsonMsg.voiceVolume;
-            if(curDonateSfx != null){
-                curDonateSfx.volume = sfxVolume / 100;
-            } 
+        if(jsonMsg.toDo == 'initialSet'){ //connect success
+            connectHint.style.display = 'none';
+            setLang(jsonMsg.lang);
+            setVolume(jsonMsg);            
+        }else if(jsonMsg.toDo == 'setLang'){
+            setLang(jsonMsg.lang);
+        }else if(jsonMsg.toDo == 'setVolume'){
+            setVolume(jsonMsg);
         }
     }
 }, (e)=>{
+    connectHint.style.display = '';
     console.log("Connection lost.");
 });
 

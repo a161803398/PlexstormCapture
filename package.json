@@ -1,8 +1,7 @@
 {
     "name": "plexstorm_chat",
-    "node-main": "www/server.js",
     "main": "www/index.html",
-    "version": "0.3.2",
+    "version": "0.4.1",
     "window": {
         "title": "",
         "toolbar": false,
@@ -11,6 +10,8 @@
     },
     "chromium-args": "--disable-gpu",
     "dependencies": {
+        "os-locale": "^2.1.0",
+        "request": "^2.85.0",
         "websocket": "^1.0.26"
     }
 }

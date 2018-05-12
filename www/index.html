@@ -3,62 +3,81 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>Plexstorm 聊天室擷取器</title>
+    <title>Plexstorm Capture</title>
     <link type="text/css" rel="stylesheet" href="client/chatStyle.css">
     <link type="text/css" rel="stylesheet" href="index.css">
-
 </head>
 
 <body>
     <div id="control">
-        <h1 id="indicator" style="display:none;"><img id="loadingImg" src="loading.gif" alt="Loading"><br>擷取中請稍後...</h1>
-        <h2 id="infoText" class="hideOnCapture">PlexStorm聊天室擷取器V0.3.2<br>by a161803398</h2>
-
-
-        <button id="loadChatBtn" class="hideOnCapture"><h2>開始擷取</h2></button>
-        <br> 測試第
-        <input id="donateSelect" type="number" min="0" value="0" style="width: 50px;"> 張贊助圖片
-        <button id="donateTestBtn">測試贊助</button><br> 測試第
-        <input id="subscriptSelect" type="number" min="0" value="0" style="width: 50px;"> 張訂閱圖片
-        <button id="subscriptTestBtn">測試訂閱</button>
+        <h1 id="indicator" style="display:none;"><img id="loadingImg" src="loading.gif" alt="Loading"><br>
+        <label id="captureHint">Please Wait...</label>
+        </h1>
+        <div id="infoText" class="hideOnCapture">Plexstorm Capture V0.4.1<br>by a161803398</div>
+                
+        <button id="loadChatBtn" class="hideOnCapture">Start Capturing</button><br class="hideOnCapture">
         
+        <label id="donateTestHint">Test donate popup:</label>
+        <input id="donateSelect" type="number" min="0" value="0" style="width: 50px;">
+        <button id="donateTestBtn">Test Donate</button><br> 
         
+        <label id="subscriptTestHint">Test subscript popup:</label>
+        <input id="subscriptSelect" type="number" min="0" value="0" style="width: 50px;">
+        <button id="subscriptTestBtn">Test Subscript</button>
+                
         <br>
-        每贊助1PD就播放
-        <input id="playTimeSelect" type="number" min="0" value="500" style="width: 50px;"> ms
+        <label id="playTimeHint1">Donate 1PD for</label>        
+        <input id="playTimeSelect" type="number" min="0" value="500" style="width: 50px;"><label id="playTimeHint2">ms video playing time</label>
         <br>
-        <button id="musicDonateTestBtn">測試點歌</button><button id="stopBtn">停止贊助訊息</button><br>
+        <button id="musicDonateTestBtn">Test YouTube Video</button>
+        <button id="phFastDonateTestBtn">Test Pornhub Video</button>
+        <button id="stopBtn">End donation</button><br>
         <table style="width:100%;" border="0">
             <tr>
                 <td style="text-align:right;width:50%">
-                    特效音量：
+                    <label id="languageHint">Language:</label>  
+                    <select id="languageSelect"></select><br>          
+                    <label id="sfxVolumeHint">SFX Volume:</label>
                     <input id="sfxVolumeRange" type="range" min="0" max="100" value="100"><br>
-                    語音音量：
+                    <label id="voiceVolumeHint">Voice Volume:</label>
                     <input id="voiceVolumeRange" type="range" min="0" max="100" value="100"><br>
-                    點歌音量：
+                    <label id="musicVolumeHint">Video Volume:</label>
                     <input id="musicVolumeRange" type="range" min="0" max="100" value="100"><br>
+                    
                 </td>
                 <td style="text-align:left;width:50%">
                     <input type="checkbox" id="readMsgChk" checked>
-                    <label for="readMsgChk">念出贊助或訂閱前留言</label><br>
+                    <label for="readMsgChk" id="readMsgChkHint">Read Donate Message</label><br>
+                    
                     <input type="checkbox" id="playYTChk" checked>
-                    <label for="playYTChk">播放YouTube點歌</label><br>
+                    <label for="playYTChk" id="playYTChkHint">Play YouTube Video</label><br>
+
+                    <input type="checkbox" id="playPHChk" checked>
+                    <label for="playPHChk" id="playPHChkHint">Play Pornhub Video</label><br>
+                    
                     <input type="checkbox" id="alwaysOnTopChk">
-                    <label for="alwaysOnTopChk">最上層顯示視窗</label>
+                    <label for="alwaysOnTopChk" id="alwaysOnTopChkHint">Always On Top</label>
                 </td>
             </tr>
         </table>
 
-        <h3 class="hideOnCapture">
-            聊天室網址: http://localhost:1069<br> 贊助圖網址: http://localhost:1069/donate<br> 訂閱圖網址: http://localhost:1069/subscript<br> 聊天室紀錄儲存於程式的chat_logs資料夾中
-        </h3>
+        <div id="linkInfo" class="hideOnCapture">
+            <label id="chatUrlHint">Chat Room:</label>http://localhost:1069<br>
+            <label id="donateUrlHint">Donation:</label>http://localhost:1069/donate<br>
+            <label id="subscriptUrlHint">Subscription:</label>http://localhost:1069/subscript<br>
+            <label id="recordsHint">Chat records save in chat_logs folder</label><br>            
+            <a id="donateLink" href="#">Support development: www.patreon.com/a1618</a>
+        </div>
         <input type="checkbox" id="autoScrollChk" checked>
-        <label for="autoScrollChk">自動捲動下方訊息</label>
+        <label id="autoScrollChkHint" for="autoScrollChk">Auto Scrolling</label>
     </div>
     <div id="content"></div>
+    
+    <script src="localize.js"></script>
+    <script src="setting.js"></script>
+    <script src="server.js"></script>
+    <script src="decodeMsg.js"></script>
+    <script src="index.js"></script>
 </body>
-<script src="client/wsMsg.js"></script>
-<script src="decodeMsg.js"></script>
-<script src="index.js"></script>
 
 </html>

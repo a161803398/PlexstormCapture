@@ -1,50 +1,63 @@
-let http = require("http");
-let url = require("url");
-let fs = require('fs');
+const http = require("http");
+const url = require("url");
+const fs = require('fs');
+const request = require('request');
 
-let setting = {
-    alwaysOnTop: false,
-    readMsg: true,
-    playYT: true,
-    playTimeUnit: 500,
-    autoScroll: true,
-    sfxVolume: 100,
-    voiceVolume: 100,
-    musicVolume: 100
-};
-
-function loadSetting(){
-    if(typeof localStorage !== 'undefined' && typeof localStorage['setting'] !== 'undefined'){
-        const prevSetting = JSON.parse(localStorage['setting']);
-        for(let key in prevSetting){
-            setting[key] = prevSetting[key];
-        }
-    }        
-}
-
+//MIME types
 const contentMap = {
-    "htm": "text/html",
+    //web
+    "htm":  "text/html",
     "html": "text/html",
-    "txt": "text/plain",
-    "png": "image/png",
-    "jpg": "image/jpg",
-    "jpeg": "image/jpg",
-    "gif": "image/gif",
-    "jpg": "image/jpg",
-    "mp3": "audio/mpeg3",
-    "wav": "audio/wav",
-    "js": "application/javascript",
+    "txt":  "text/plain",       
+    "xml":  "application/xml",
+    "dtd":  "application/xml-dtd",    
+    "js":   "application/javascript",
     "json": "application/json",
-    "css": "text/css"
+    "css":  "text/css",
+    
+    //image
+    "png":  "image/png",
+    "jpg":  "image/jpg",
+    "jpe":  "image/jpg",
+    "jpeg": "image/jpg",    
+    "gif":  "image/gif",
+    "bmp":  "image/bmp",
+    "svg":  "image/svg+xml",
+    "tif":  "image/tiff",
+    "tiff":  "image/tiff",
+    
+    //audio
+    "mp3":  "audio/mpeg3",
+    "wav":  "audio/wav",
+    "ogg":  "audio/ogg",
+    "oga":  "audio/ogg",
+    "spx":  "audio/ogg",
+    "mp4a": "audio/mp4",
+    "mid":  "audio/midi",
+    "midi": "audio/midi",
+    "aac":  "audio/x-aac",
+    "aif":  "audio/x-aiff",
+    "aiff": "audio/x-aiff",
+    "aifc": "audio/x-aiff",
+    
 }
 
-http.createServer(function(request, response) {
-    let pathname = url.parse(request.url).pathname.substr(1); //remove left '/'
+http.createServer(function(req, response) {
+    let pathname = url.parse(req.url).pathname.substr(1); //remove left '/'
     
     if(pathname == ""){
         pathname = "index.html";
     }    
-
+    
+    if(pathname.startsWith("pornhub/")){
+        let vid = pathname.substr(8);
+        
+        let x = request('https://www.pornhub.com/embed/' + vid);
+        req.pipe(x);
+        x.pipe(response);
+        return;
+    }
+    
     let splitPath = pathname.split(".");
     if(splitPath.length <= 1){
         pathname += '.html';
@@ -131,26 +144,28 @@ let wsServer = new webSocketServer({
 
 // This callback function is called every time someone
 // tries to connect to the WebSocket server
-wsServer.on('request', function(request) {
+wsServer.on('request', function(request) {    
     console.log((new Date()) + ' Connection from origin ' + request.origin + '.');
 
     let connection = request.accept(null, request.origin); //Same origin policy
     let index = clients.push(connection) - 1; //current client index
 
     console.log((new Date()) + ' Connection accepted.');
+    //console.log(clients);
 
-    clients[index].sendUTF(JSON.stringify({ type:'systemMsg', msgText: 'success'})); //send welcome message
-    
-    loadSetting(); //update volume info
-    
-    clients[index].sendUTF(JSON.stringify({ //send volume info to client
-        type: 'action', 
-        toDo: 'setVolume', 
+    clients[index].sendUTF(JSON.stringify({
+        type:'action',
+        toDo: "initialSet",
+        lang: setting.language,
         sfxVolume: setting.sfxVolume,
         voiceVolume: setting.voiceVolume,
         musicVolume: setting.musicVolume
-    }));   
+        
+    })); //send welcome message         
     
+    
+    /* 
+    //no need to receive message anymore
     // user sent some message
     connection.on('message', function(message) {
         if (message.type === 'utf8') { // accept only text
@@ -170,12 +185,21 @@ wsServer.on('request', function(request) {
             }                
         }
     });
-
+    */
+    
     // user disconnected
     connection.on('close', function(connection) {
         console.log((new Date()) + " Peer " + connection.remoteAddress + " disconnected.");
         // remove user from the list of connected clients
         clients.splice(index, 1);
     });
-
 });
+
+function broadcastMsg(jsonObj){
+    if(jsonObj.type == 'chat'){
+        logToFile(jsonObj.userName, jsonObj.msgText);
+    }
+    for (let i = 0; i < clients.length; i++) {
+        clients[i].sendUTF(JSON.stringify(jsonObj));      
+    }
+}

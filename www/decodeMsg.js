@@ -1,7 +1,3 @@
-let toSpeakMsg = true;
-let playYT = true;
-let playTimeUnit = 1000;
-
 function createElementFromHTML(htmlString) {
     const div = document.createElement('div');
     div.innerHTML = htmlString.trim();
@@ -26,25 +22,39 @@ function decodeDonateMsg(rawUserMsg){
     let userMsg = rawUserMsg;
     let vid = null;
     let startTime = 0;
+    let videoType = null;
     
     if(urlMatch !== null){
         userMsg = rawUserMsg.substring(0, urlMatch.index).trim();
-        try {   
-            rawUrl = rawUserMsg.substring(urlMatch.index);
-            const ytVideoId = rawUrl.match(/(?<=watch\?v=|\/videos\/|embed\/|youtu\.be\/)[^#\&\?]*/);
-            const rawStartTime = rawUrl.match(/(?<=\?t=|\&t=)[^#\&\?]*/);
-            if(ytVideoId !== null){
-                vid = ytVideoId[0];
-                
-                if(rawStartTime !== null){
-                    startTime = parseInt(rawStartTime[0]);
-                }
+        
+        try {         
+            const rawUrl = rawUserMsg.substring(urlMatch.index).trim();
+            if(setting.playYT && rawUrl.match(/youtube\.com|youtu\.be\//) != null){ //check if it is YouTube Video
+                const ytVideoId = rawUrl.match(/(?<=watch\?v=|\/videos\/|embed\/|youtu\.be\/)[^#\&\?]*/);
+                const rawStartTime = rawUrl.match(/(?<=\?t=|\&t=)[^#\&\?]*/);
+                if(ytVideoId !== null){
+                    vid = ytVideoId[0];
+                    videoType = 'YouTube';                    
+                    if(rawStartTime !== null){
+                        startTime = parseInt(rawStartTime[0]);
+                    }
+                }                
+            }else if(setting.playPH && rawUrl.match(/pornhub\.com/) != null){ //check if it is PornHub Video
+                const phVideoId = rawUrl.match(/(?<=viewkey=|embed\/)[^#\&\?]*/);
+                const rawStartTime = rawUrl.match(/(?<=\?t=|\&t=)[^#\&\?]*/);
+                if(phVideoId !== null){
+                    vid = phVideoId[0];
+                    videoType = 'PornHub';                    
+                    if(rawStartTime !== null){
+                        startTime = parseInt(rawStartTime[0]);
+                    }
+                }                
             }
         } catch (e) {
             vid = null;
         }
     }
-    return { userMsg: userMsg, vid: vid, startTime: startTime}; 
+    return { userMsg: userMsg, vid: vid, startTime: startTime, videoType: videoType}; 
 }
 
 function decodeMsg(tar){
@@ -91,9 +101,9 @@ function decodeMsg(tar){
         if(msgObj.msgType == 3 || msgObj.msgType == 4){
             if(msgObj.msgType == 3){
                 msgObj['pdAmount'] = getPDCount(msgObj.msgText);
-                msgObj.msgText = '贊助了' + msgObj['pdAmount'] + 'PD';
+                msgObj.msgText = curLang.msg['donate'] + msgObj['pdAmount'] + 'PD';
             }else {
-                msgObj.msgText = '訂閱了本頻道';
+                msgObj.msgText = curLang.msg['subscript'];
             }
             
             msgObj['rndNum'] = Math.floor(999999999 * Math.random());
@@ -101,17 +111,18 @@ function decodeMsg(tar){
             if(typeof preUserMsgMap[msgObj.userName] != "undefined"){
                 msgObj['preMsg'] = preUserMsgMap[msgObj.userName];
                 
-                if(playYT && msgObj.msgType == 3){ //for donate only
+                if(msgObj.msgType == 3){ //for donate only
                     const preMsgObj = decodeDonateMsg(msgObj['preMsg']);
                     msgObj['preMsg'] = preMsgObj.userMsg;
                     if(preMsgObj.vid != null){
                         msgObj['vid'] = preMsgObj.vid;
                         msgObj['startTime'] = preMsgObj.startTime;
-                        msgObj['playTime'] = playTimeUnit * msgObj['pdAmount'];
+                        msgObj['playTime'] = setting.playTimeUnit * msgObj['pdAmount'];
+                        msgObj['videoType'] = preMsgObj.videoType;
                     }
                 }
                 
-                if(!toSpeakMsg){
+                if(!setting.readMsg){
                     msgObj['preMsg'] = "";                            
                 }                
             }else{
