@@ -1,0 +1,3 @@
+Download normal version nw.js from https://nwjs.io/ and unzip it to nwjs folder
+npm install
+gulp

@@ -1,17 +1,19 @@
 {
-    "name": "plexstorm_chat",
-    "main": "www/index.html",
-    "version": "0.4.1",
-    "window": {
-        "title": "",
-        "toolbar": false,
-        "width": 450,
-        "height": 600
-    },
-    "chromium-args": "--disable-gpu",
+    "name": "nwjs_wrapper_win",
+    "version": "0.0.1",
     "dependencies": {
-        "os-locale": "^2.1.0",
-        "request": "^2.85.0",
-        "websocket": "^1.0.26"
+        "del": "^3.0.0",
+        "gulp": "^4.0.0",
+        "gulp-concat": "^2.6.1",
+        "gulp-html-replace": "^1.6.2",
+        "gulp-install": "^1.1.0",
+        "gulp-minify-css": "^1.2.4",
+        "gulp-minify-html": "^1.0.6",
+        "gulp-rename": "^1.2.3",
+        "gulp-uglify": "^3.0.0",
+        "npm": "^6.4.0",
+        "plugin-error": "^1.0.1",
+        "rcedit": "^1.1.0",
+        "run-sequence": "^2.2.1"
     }
 }

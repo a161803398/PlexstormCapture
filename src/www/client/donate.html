@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>Donate Window</title>
+        <link type="text/css" rel="stylesheet" href="assets/donate.css"> 
+    </head>
+    <body>
+        <div id="ytPlayer"></div>
+        <iframe id="pFrame" width="100%" height="100%" src="about:blank" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+        <div id ="videoLoadHint" style="display:none">
+        <img src="assets/loading.gif" alt="Loading"><br>
+        <label id="loadingVideoHint">Loading video...</label>
+        </div>
+
+        <div id ="connectHint">
+            <img src="assets/connecting.gif" alt="Loading"><br>    
+            <label id="connectText">Connecting to local server...</label>        
+        </div>
+        
+        <div id="donateDiv" style="opacity:0;">
+            <img id="donateImg" src="" alt="Donate Image">
+            <div id ="donateInfo"></div>
+        </div>        
+        <script src="js/localizeClient.js"></script>
+        <script src='https://code.responsivevoice.org/responsivevoice.js'></script>
+        <script src="js/ytPlay.js"></script>
+        <script src="js/phPlay.js"></script>
+        <script src="js/wsMsg.js"></script>
+        <script src="js/fade.js"></script>
+        <script src="/popup/donateSetting.js"></script>
+        <script src="js/donate.js"></script>
+    </body>
+    <script></script>
+</html>

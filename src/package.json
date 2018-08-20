@@ -1,0 +1,20 @@
+{
+    "name": "plexstorm_chat",
+    "main": "www/index.html",
+    "version": "0.5.1",
+    "author": "a161803398(Yu-Sing)",
+    "description": "Plexstorm chat room capture tool",
+    "window": {
+        "title": "",
+        "toolbar": false,
+        "width": 450,
+        "height": 600,
+        "icon": "www/assets/icon.png"
+    },
+    "chromium-args": "--disable-gpu",
+    "dependencies": {
+        "got": "^8.3.1",
+        "os-locale": "^2.1.0",
+        "websocket": "^1.0.26"
+    }
+}

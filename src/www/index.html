@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Plexstorm Capture</title>
+    <link type="text/css" rel="stylesheet" href="client/assets/chatStyle.css">
+    <link type="text/css" rel="stylesheet" href="assets/index.css">
+</head>
+
+<body>
+    <div id="loadingOverlay">
+        <img src="assets/loading.gif" alt="Loading">        
+    </div>
+    <div id="control">
+        <h1 id="indicator" style="display:none;"><img id="loadingImg" src="assets/loading.gif" alt="Loading"><br>
+        <span id="captureHint">Please Wait...</span>
+        </h1>
+        <div id="infoText" class="hideOnCapture">Plexstorm Capture V0.5.1<br>by a161803398</div>
+                
+        <button id="loadChatBtn" class="hideOnCapture">Start Capturing</button><br class="hideOnCapture">
+        
+        <span id="donateTestHint">Test donate popup:</span>
+        <input id="donateSelect" type="number" min="0" value="0" style="width: 50px;">
+        <button id="donateTestBtn">Test Donate</button><br> 
+        
+        <span id="subscriptTestHint">Test subscript popup:</span>
+        <input id="subscriptSelect" type="number" min="0" value="0" style="width: 50px;">
+        <button id="subscriptTestBtn">Test Subscript</button>
+                
+        <br>
+        <span id="playTimeHint1">Donate 1PD for</span>        
+        <input id="playTimeSelect" type="number" min="0" value="500" style="width: 50px;"><span id="playTimeHint2">ms video playing time</span>
+        <br>
+        <button id="musicDonateTestBtn">Test YouTube Video</button>
+        <button id="phFastDonateTestBtn">Test Pornhub Video</button><br>
+        
+        <button id="stopBtn">Terminate donate popup</button>
+        <button id="showHideBtn">Show/Hide donate Video</button><br>
+        <table style="width:100%;" border="0">
+            <tr>
+                <td style="text-align:right;width:50%">
+                    <span id="languageHint">Language:</span>  
+                    <select id="languageSelect"></select><br>          
+                    <span id="sfxVolumeHint">SFX Volume:</span>
+                    <input id="sfxVolumeRange" type="range" min="0" max="100" value="100"><br>
+                    <span id="voiceVolumeHint">Voice Volume:</span>
+                    <input id="voiceVolumeRange" type="range" min="0" max="100" value="100"><br>
+                    <span id="musicVolumeHint">Video Volume:</span>
+                    <input id="musicVolumeRange" type="range" min="0" max="100" value="100"><br>
+                    
+                </td>
+                <td style="text-align:left;width:50%">
+                    <input type="checkbox" id="readMsgChk" checked>
+                    <label for="readMsgChk" id="readMsgChkHint">Read Donate Message</label><br>
+                    
+                    <input type="checkbox" id="playYTChk" checked>
+                    <label for="playYTChk" id="playYTChkHint">Play YouTube Video</label><br>
+
+                    <input type="checkbox" id="playPHChk" checked>
+                    <label for="playPHChk" id="playPHChkHint">Play Pornhub Video</label><br>
+
+                    <input type="checkbox" id="defaultShowVideoChk" checked>
+                    <label for="defaultShowVideoChk" id="defaultShowVideoChkHint">Show Video by default</label><br>
+                    
+                    <input type="checkbox" id="logToFileChk" checked>
+                    <label for="logToFileChk" id="logToFileChkHint">Save chat records to files</label>   
+                </td>
+            </tr>
+        </table>
+
+        <div id="linkInfo" class="hideOnCapture">
+            <span id="recordsHint">Chat records save in chat_logs folder</span><br>            
+            <span id="chatUrlHint">Chat Room:</span>http://localhost:1069<br>
+            <span id="donateUrlHint">Donation:</span>http://localhost:1069/donate<br>
+            <span id="subscriptUrlHint">Subscription:</span>http://localhost:1069/subscript<br>
+            <span id="topDonateUrlHint">Top Donate:</span>http://localhost:1069/topDonate<br>            
+            <a id="donateLink" href="#">Support development: www.patreon.com/a1618</a>
+        </div>
+        <input type="checkbox" id="alwaysOnTopChk">
+        <label for="alwaysOnTopChk" id="alwaysOnTopChkHint">Window always On Top</label> 
+        <input type="checkbox" id="autoScrollChk" checked>
+        <label id="autoScrollChkHint" for="autoScrollChk">Auto Scrolling</label>
+    </div>
+    <div id="content"></div>
+    
+    <script src="js/localize.js"></script>
+    <script src="client/js/chatUserStyle.js"></script>
+    <script src="js/setting.js"></script>
+    <script src="js/server.js"></script>
+    <script src="js/decodeMsg.js"></script>
+    <script src="js/index.js"></script>
+</body>
+
+</html>
