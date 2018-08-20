@@ -8,12 +8,18 @@ Desktop.ini
 # Recycle Bin used on file shares
 $RECYCLE.BIN/
 
-#node.js modules
+# node.js modules
 node_modules/
 
-#nw.js files
+# nw.js files
 /nwjs/
 /nwjs-sdk/
+
+# Build result
+/dist
+
+# Dev run files
+/chat_logs
 
 # Windows Installer files
 *.cab

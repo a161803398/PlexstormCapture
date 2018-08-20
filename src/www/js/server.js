@@ -129,7 +129,7 @@ function logToFile(user, msg){
             fs.mkdirSync('../chat_logs');
         }        
         fs.appendFile("../chat_logs/" + getCurDateStr() + ".log", 
-        "[" + getCurTimeStr() + "] <" + user + "> " + msg + "\n", (err) => {
+        "[" + getCurTimeStr() + "] <" + user + "> " + msg + "\r\n", (err) => {
             if(err) {                
                 return console.log(err);
             }

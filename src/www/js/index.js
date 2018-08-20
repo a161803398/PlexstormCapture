@@ -206,7 +206,7 @@ const indicator = document.getElementById('indicator');
 //webview.addEventListener('loadstart', (e) => {});
 
 webview.addEventListener('loadredirect', (e) => {
-    if(e.newUrl === 'https://plexstorm.com/'){
+    if(e.newUrl.startsWith('https://plexstorm.com/?user=')){
         alert(curLang.msg['captureError']);
         showHideOnCapture();
         indicator.style.display = 'none';
