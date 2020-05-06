@@ -94,3 +94,7 @@ input[type=range]::-webkit-slider-thumb {
     overflow: visible;
     cursor:default;
 }
+
+.warning {
+    color: #f00;
+}

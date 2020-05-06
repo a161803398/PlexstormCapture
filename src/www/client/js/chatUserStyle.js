@@ -59,20 +59,20 @@ function addMsg(jsonMsg, path2Img){
     if(typeof jsonMsg.ucid == "undefined"){
         jsonMsg.ucid = -1; //use default color and image
     }else{
-        
         if(jsonMsg.msgType == 1){ //streamer
             preImgName = 'recorder';
         }else if(jsonMsg.msgType == 2){ //moderator
             preImgName = 'sword';
         }
-        
-        if(jsonMsg.userSex == 0){
-            imgName = 'male';
-        }else if(jsonMsg.userSex == 1){
-            imgName = 'female';   
-        }else{        
-            imgName = 'bisex';                 
-        }
+        imgName = 'user';
+        // FIXME: don't work anymore
+        // if(jsonMsg.userSex == 0){
+        //     imgName = 'male';
+        // }else if(jsonMsg.userSex == 1){
+        //     imgName = 'female';   
+        // }else{        
+        //     imgName = 'bisex';
+        // }
     }
     
     const newRow = document.createElement("div");

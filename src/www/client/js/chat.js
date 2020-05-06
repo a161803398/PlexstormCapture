@@ -77,6 +77,3 @@ setUpWs((jsonMsg)=>{
     });
 });
 
-window.addEventListener("resize", removeOldMsg);    
-
-

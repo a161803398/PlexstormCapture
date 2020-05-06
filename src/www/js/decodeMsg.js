@@ -62,8 +62,11 @@ function decodeDonateMsg(rawUserMsg){
 }
 
 function decodeMsg(tar){
-    const decodeElement = createElementFromHTML(tar);
-    //console.log(decodeElement);
+    const decodeElement = createElementFromHTML(tar).children[0];
+    if (!decodeElement) {
+        return;
+    }
+    console.log(decodeElement);
     const msgObj = {
         type: 'chat',
         msgType: 0, //normal
@@ -72,42 +75,31 @@ function decodeMsg(tar){
         msgText: ''
     };
     
-    const classList = decodeElement.classList;
-
-    if(classList.contains('type-streamer')){
-        msgObj.msgType = 1;
-    }else if(classList.contains('type-moderator')){
-        msgObj.msgType = 2;
-    }else if(classList.contains('type-tip')){
-        msgObj.msgType = 3;
-    }else if(classList.contains('type-subscription')){
-        msgObj.msgType = 4;
-    }
-
-    const userSpan = decodeElement.getElementsByClassName('username')[0];
-
-    if(typeof userSpan != 'undefined'){
+    
+    const userSpan = decodeElement.children[0];
+    if (userSpan) {
         msgObj.userName = userSpan.innerText.trim();
         if(msgObj.userName == "asixteen"){
             msgObj.userName = "a161803398";
         }
-        
-        const classList = userSpan.classList;
-        if(classList.contains('color-female')){
-            msgObj.userSex = 1;
-        }else if(classList.contains('color-trans')){
-            msgObj.userSex = 2;
-        }
+
+        // FIXME: don't work anymore
+        // const classList = userSpan.classList;
+        // if(classList.contains('color-female')){
+        //     msgObj.userSex = 1;
+        // }else if(classList.contains('color-trans')){
+        //     msgObj.userSex = 2;
+        // }
     }
     
-    const msgP = decodeElement.getElementsByClassName('message-text')[0];
+    const msgP = decodeElement.children[1];
     
-    if(typeof msgP != 'undefined'){
+    if (msgP) {
         msgObj.msgText = msgP.innerText.trim();
         
-        let userObj = null;        
+        let userObj = null;
         if(userMap.has(msgObj.userName)){ //old user
-            userObj = userMap.get(msgObj.userName); //retrieve userObj            
+            userObj = userMap.get(msgObj.userName); //retrieve userObj
         }else{
             userObj = {preMsg: null, ucid: userMap.size};
             userMap.set(msgObj.userName, userObj); //put userObj to map and increase map size
@@ -142,12 +134,12 @@ function decodeMsg(tar){
                 }
                 
                 if(!setting.readMsg){
-                    msgObj['preMsg'] = "";                            
-                }                
+                    msgObj['preMsg'] = "";
+                }
             }else{
                 msgObj['preMsg'] = ""; 
             }
-                        
+
         }else{
             //preUserMsgMap[msgObj.userName] = msgObj.msgText; //record pre-message
             userObj.preMsg = msgObj.msgText; //record pre-message

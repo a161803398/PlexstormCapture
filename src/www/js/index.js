@@ -103,24 +103,19 @@ function updateState(){
 
 updateState();
 
-const toInject = ()=> {
-    const form = document.getElementsByTagName('form')[0];
-    if(typeof form != 'undefined'){
-        form.submit();
+const toInject = () => {
+    if (window.CAPTURE_INJECTED === true){
+        return;
     }
-    
-    const chatCol = document.getElementsByClassName('chat-column')[0];
-    if(typeof chatCol != 'undefined'){     
-        document.removeChild(document.documentElement);
-        const body = document.createElement("body");
+    window.CAPTURE_INJECTED = true;
 
-        document.appendChild(body);
-
-        body.appendChild(chatCol);
-        
+    let msgArea = null;
+    function init() {
+        console.log('Init!!!');
         let messageSource = null, messageOrigin;
-        addEventListener('message', function(e) {
+        window.addEventListener('message', e => {
             if (messageSource == null) {
+                console.log(e);
                 if (e.data == "fromCapture") {
                     messageSource = e.source;
                     messageOrigin = e.origin;
@@ -130,20 +125,19 @@ const toInject = ()=> {
         });
         
         function sendMsg(jsonObj){
+            console.log(jsonObj);
             if(messageSource != null){ //message ready
-                messageSource.postMessage(JSON.stringify(jsonObj), messageOrigin);                
+                messageSource.postMessage(JSON.stringify(jsonObj), messageOrigin);
             }else{
                 setTimeout(()=>{sendMsg(jsonObj);}, 1000); //wait 1 second and try again
             }
         }
-                
-        const msgArea = document.getElementById('message-area');
-        
+
         const observer = new MutationObserver((records)=>{
             //We hide the webview in current version and no need to scroll window
             //window.scrollBy(0, 1000);
             records.map(function(record){
-                //console.log(record);
+                // console.log(record);
                 let nodes = record.addedNodes;
                 for(let i = 0; i < nodes.length; i++){
                     sendMsg({type: 'chat', info: nodes[i].outerHTML});
@@ -183,8 +177,17 @@ const toInject = ()=> {
                 subtree: true
             });    
             sendRankingInfo(); //first send it
-        }        
+        }
     }
+    function checkReady() {
+        msgArea = document.querySelector('.overflow-hidden.py-4.pb-0.flex-1.scrolling-touch.vb-content');
+        if (msgArea) {
+            init();
+        } else {
+            setTimeout(checkReady, 1000);
+        }
+    }
+    checkReady();
 };
 
 function hideHideOnCapture(){
@@ -200,7 +203,9 @@ function showHideOnCapture(){
 
 const webview = document.createElement('webview');
 document.body.appendChild(webview); 
-webview.style.display = 'none';
+// webview.style.display = 'none';
+
+webview.setAudioMuted(true); // prevent donate sound
 const indicator = document.getElementById('indicator');
 
 //webview.addEventListener('loadstart', (e) => {});
@@ -242,6 +247,7 @@ loadChatBtn.addEventListener('click', (e)=>{
         
         setting.defaultUrl = val;
         updateSetting();
+        webview.showDevTools(true);
     }
 });
 
