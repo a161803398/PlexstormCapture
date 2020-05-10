@@ -16,8 +16,7 @@
         <h1 id="indicator" style="display:none;"><img id="loadingImg" src="assets/loading.gif" alt="Loading"><br>
         <span id="captureHint">Please Wait...</span>
         </h1>
-        <div id="infoText" class="hideOnCapture">Plexstorm Capture V1.0.0-alpha.1<br>by a161803398</div>
-        <div class="warning">Donation popup is not working in this version.</div>
+        <div id="infoText" class="hideOnCapture">Plexstorm Capture V1.0.1-alpha.2<br>by a161803398</div>
                 
         <button id="loadChatBtn" class="hideOnCapture">Start Capturing</button><br class="hideOnCapture">
         
@@ -34,7 +33,7 @@
         <input id="playTimeSelect" type="number" min="0" value="500" style="width: 50px;"><span id="playTimeHint2">ms video playing time</span>
         <br>
         <button id="musicDonateTestBtn">Test YouTube Video</button>
-        <button id="phFastDonateTestBtn">Test Pornhub Video</button><br>
+        <button id="phFastDonateTestBtn" disabled>Test Pornhub Video</button><br>
         
         <button id="stopBtn">Terminate donate popup</button>
         <button id="showHideBtn">Show/Hide donate Video</button><br>
@@ -58,8 +57,8 @@
                     <input type="checkbox" id="playYTChk" checked>
                     <label for="playYTChk" id="playYTChkHint">Play YouTube Video</label><br>
 
-                    <input type="checkbox" id="playPHChk" checked>
-                    <label for="playPHChk" id="playPHChkHint">Play Pornhub Video</label><br>
+                    <input type="checkbox" id="playPHChk" disabled>
+                    <label for="playPHChk" id="playPHChkHint" class="not-working">Play Pornhub Video</label><br>
 
                     <input type="checkbox" id="defaultShowVideoChk" checked>
                     <label for="defaultShowVideoChk" id="defaultShowVideoChkHint">Show Video by default</label><br>
@@ -74,8 +73,8 @@
             <span id="recordsHint">Chat records save in chat_logs folder</span><br>            
             <span id="chatUrlHint">Chat Room:</span>http://localhost:1069<br>
             <span id="donateUrlHint">Donation:</span>http://localhost:1069/donate<br>
-            <span id="subscriptUrlHint">Subscription:</span>http://localhost:1069/subscript<br>
-            <span id="topDonateUrlHint">Top Donate:</span>http://localhost:1069/topDonate<br>            
+            <span class="not-working"><span id="subscriptUrlHint">Subscription:</span>http://localhost:1069/subscript</span><br>
+            <span class="not-working"><span id="topDonateUrlHint">Top Donate:</span>http://localhost:1069/topDonate</span><br>
             <a id="donateLink" href="#">Support development: www.patreon.com/a1618</a>
         </div>
         <input type="checkbox" id="alwaysOnTopChk">

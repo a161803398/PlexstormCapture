@@ -46,7 +46,7 @@ donateLink.addEventListener("click", ()=>{
 function updateSetting(){
     setting.readMsg = readMsgChk.checked;
     setting.playYT = playYTChk.checked;
-    setting.playPH = playPHChk.checked;
+    setting.playPH = false; // FIXME
     setting.defaultShowVideo = defaultShowVideoChk.checked;    
     setting.logToFile = logToFileChk.checked;    
     
@@ -86,7 +86,7 @@ function updateState(){
     loadSetting();
     readMsgChk.checked = setting.readMsg;
     playYTChk.checked = setting.playYT;
-    playPHChk.checked = setting.playPH;
+    playPHChk.checked = false; // FIXME
     defaultShowVideoChk.checked = setting.defaultShowVideo;
     logToFileChk.checked = setting.logToFile;
     
@@ -267,24 +267,50 @@ function printMsg(jsonMsg){
     }    
 }
 
-musicDonateTestBtn.addEventListener('click', (e)=>{    
-    printMsg(decodeMsg('<div class="row message flex items-center type-normal type-normal"><div class="user flex items-center"><i aria-hidden="true" class="far mr-1 fa-venus"></i> <span class="username color-male">a161803398</span><span class="placeholder mx1">·</span></div> <span class="timestamp grey mr1"><time datetime="Thu May 03 2018 12:51:11 GMT+0800 (台北標準時間)" title="5/3/2018, 12:51:11 PM">2 minutes ago</time></span><p class="my-4 message-text white">' + curLang.msg['testYouTubeDonateMsg'] + '</p></div>'));
-    printMsg(decodeMsg('<div class="row message flex items-center type-normal type-tip"><div class="flex justify-center mx-auto"><div class="user flex items-center mr1"><i aria-hidden="true" class="far mr-2 fa-mars"></i> <span class="username color-male">a161803398</span></div><p class="my-4 message-text">has tipped<span class="white ml1">17 PD</span></p></div></div>'));
-    if(curTopDonateMsg == ""){
-        //put some dummy message
-        updateTopDonate('a161803398: <span class="hightlight">Test Donate</span>');        
+musicDonateTestBtn.addEventListener('click', (e)=>{
+    const msgObj = {
+        type: 'chat',
+        msgType: 3, //type-tip
+        userName: 'a161803398', 
+        userSex: 0,//male
+        msgText: curLang.msg['donate'] + '17PD',
+        pdAmount: 17,
+        rndNum: parseInt(donateSelect.value),
+        ucid: 0
+    };
+
+    const preMsgObj = decodeDonateMsg(setting.readMsg ? curLang.msg['testYouTubeDonateMsg'] : "");
+    msgObj['preMsg'] = preMsgObj.userMsg;
+    if(preMsgObj.vid != null){
+        msgObj['vid'] = preMsgObj.vid;
+        msgObj['startTime'] = preMsgObj.startTime;
+        msgObj['playTime'] = setting.playTimeUnit * msgObj['pdAmount'];
+        msgObj['videoType'] = preMsgObj.videoType;
     }
-    
+    printMsg(msgObj);
 });
 
-phFastDonateTestBtn.addEventListener('click', (e)=>{    
-    printMsg(decodeMsg('<div class="row message flex items-center type-normal type-normal"><div class="user flex items-center"><i aria-hidden="true" class="far mr-1 fa-venus"></i> <span class="username color-male">a161803398</span><span class="placeholder mx1">·</span></div> <span class="timestamp grey mr1"><time datetime="Thu May 03 2018 12:51:11 GMT+0800 (台北標準時間)" title="5/3/2018, 12:51:11 PM">2 minutes ago</time></span><p class="my-4 message-text white">' + curLang.msg['testPornHubDonateMsg'] + '</p></div>'));
-    printMsg(decodeMsg('<div class="row message flex items-center type-normal type-tip"><div class="flex justify-center mx-auto"><div class="user flex items-center mr1"><i aria-hidden="true" class="far mr-2 fa-mars"></i> <span class="username color-male">a161803398</span></div><p class="my-4 message-text">has tipped<span class="white ml1">10 PD</span></p></div></div>'));    
-    if(curTopDonateMsg == ""){
-        //put some dummy message
-        updateTopDonate('a161803398: <span class="hightlight">Test Donate</span>');        
+phFastDonateTestBtn.addEventListener('click', (e)=>{
+    const msgObj = {
+        type: 'chat',
+        msgType: 3, //type-tip
+        userName: 'a161803398', 
+        userSex: 0,//male
+        msgText: curLang.msg['donate'] + '17PD',
+        pdAmount: 17,
+        rndNum: parseInt(donateSelect.value),
+        ucid: 0
+    };
+
+    const preMsgObj = decodeDonateMsg(setting.readMsg ? curLang.msg['testPornHubDonateMsg'] : "");
+    msgObj['preMsg'] = preMsgObj.userMsg;
+    if(preMsgObj.vid != null){
+        msgObj['vid'] = preMsgObj.vid;
+        msgObj['startTime'] = preMsgObj.startTime;
+        msgObj['playTime'] = setting.playTimeUnit * msgObj['pdAmount'];
+        msgObj['videoType'] = preMsgObj.videoType;
     }
-    
+    printMsg(msgObj);
 });
 
 

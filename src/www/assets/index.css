@@ -98,3 +98,8 @@ input[type=range]::-webkit-slider-thumb {
 .warning {
     color: #f00;
 }
+
+.not-working {
+    color: #808080;
+    text-decoration: line-through;
+}

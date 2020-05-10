@@ -5,15 +5,7 @@ function createElementFromHTML(htmlString) {
 }
 
 function getPDCount(str){
-    let pd = 0;
-    for(let i = 0; i < str.length; i++){
-        const curCharCode = str.charCodeAt(i);
-        if(curCharCode >= 48 && curCharCode <= 57){ //0 to 9
-            pd *= 10;
-            pd += curCharCode - 48;
-        }
-    }
-    return pd;
+    return parseInt(str.match(/has tipped (\d+)/)[1]);
 }
 
 const userMap = new Map();
@@ -75,75 +67,76 @@ function decodeMsg(tar){
         msgText: ''
     };
     
-    
-    const userSpan = decodeElement.children[0];
-    if (userSpan) {
-        msgObj.userName = userSpan.innerText.trim();
-        if(msgObj.userName == "asixteen"){
-            msgObj.userName = "a161803398";
+    if (decodeElement.classList.contains('highlight-message')) {
+        msgObj.msgType = 3;
+
+        const msgP = decodeElement.children[0];
+
+        const userSpan = msgP.children[0];
+        if (userSpan) {
+            msgObj.userName = userSpan.innerText.trim();
         }
 
-        // FIXME: don't work anymore
-        // const classList = userSpan.classList;
-        // if(classList.contains('color-female')){
-        //     msgObj.userSex = 1;
-        // }else if(classList.contains('color-trans')){
-        //     msgObj.userSex = 2;
-        // }
-    }
-    
-    const msgP = decodeElement.children[1];
-    
-    if (msgP) {
-        msgObj.msgText = msgP.innerText.trim();
-        
-        let userObj = null;
-        if(userMap.has(msgObj.userName)){ //old user
-            userObj = userMap.get(msgObj.userName); //retrieve userObj
-        }else{
-            userObj = {preMsg: null, ucid: userMap.size};
-            userMap.set(msgObj.userName, userObj); //put userObj to map and increase map size
+        if (msgP) {
+            msgObj.msgText = msgP.innerText.trim();
         }
-        msgObj.ucid = userObj.ucid; //set ucid
+    } else {
+        const userSpanWrapper = decodeElement.children[0];
+        const userSpan = userSpanWrapper.children[0]
+
+        if (userSpan) {
+            msgObj.userName = userSpan.innerText.trim();
+        }else{
+            msgObj.userName = userSpanWrapper.innerText.trim();
+        }
         
-        if(msgObj.msgType == 3 || msgObj.msgType == 4){
-            if(msgObj.msgType == 3){
-                msgObj['pdAmount'] = getPDCount(msgObj.msgText);
-                msgObj.msgText = curLang.msg['donate'] + msgObj['pdAmount'] + 'PD';
-            }else {
-                msgObj.msgText = curLang.msg['subscript'];
+        const msgP = decodeElement.children[1];
+        
+        if (msgP) {
+            msgObj.msgText = msgP.innerText.trim();
+        }
+    }
+
+    let userObj = null;
+    if(userMap.has(msgObj.userName)){ //old user
+        userObj = userMap.get(msgObj.userName); //retrieve userObj
+    }else{
+        userObj = {preMsg: null, ucid: userMap.size};
+        userMap.set(msgObj.userName, userObj); //put userObj to map and increase map size
+    }
+    msgObj.ucid = userObj.ucid; //set ucid
+    
+    if(msgObj.msgType == 3 || msgObj.msgType == 4){
+        if(msgObj.msgType == 3){
+            msgObj['pdAmount'] = getPDCount(msgObj.msgText);
+        }else {
+            msgObj.msgText = curLang.msg['subscript'];
+        }
+        
+        msgObj['rndNum'] = Math.floor(999999999 * Math.random());
+                               
+        if(userObj.preMsg != null){
+            msgObj['preMsg'] = userObj.preMsg;
+            
+            if(msgObj.msgType == 3){ //for donate only
+                const preMsgObj = decodeDonateMsg(msgObj['preMsg']);
+                msgObj['preMsg'] = preMsgObj.userMsg;
+                if(preMsgObj.vid != null){
+                    msgObj['vid'] = preMsgObj.vid;
+                    msgObj['startTime'] = preMsgObj.startTime;
+                    msgObj['playTime'] = setting.playTimeUnit * msgObj['pdAmount'];
+                    msgObj['videoType'] = preMsgObj.videoType;
+                }
             }
             
-            msgObj['rndNum'] = Math.floor(999999999 * Math.random());
-                       
-            //if(typeof preUserMsgMap[msgObj.userName] != "undefined"){
-                                   
-            if(userObj.preMsg != null){
-                //msgObj['preMsg'] = preUserMsgMap[msgObj.userName];
-                msgObj['preMsg'] = userObj.preMsg;
-                
-                if(msgObj.msgType == 3){ //for donate only
-                    const preMsgObj = decodeDonateMsg(msgObj['preMsg']);
-                    msgObj['preMsg'] = preMsgObj.userMsg;
-                    if(preMsgObj.vid != null){
-                        msgObj['vid'] = preMsgObj.vid;
-                        msgObj['startTime'] = preMsgObj.startTime;
-                        msgObj['playTime'] = setting.playTimeUnit * msgObj['pdAmount'];
-                        msgObj['videoType'] = preMsgObj.videoType;
-                    }
-                }
-                
-                if(!setting.readMsg){
-                    msgObj['preMsg'] = "";
-                }
-            }else{
-                msgObj['preMsg'] = ""; 
+            if(!setting.readMsg){
+                msgObj['preMsg'] = "";
             }
-
         }else{
-            //preUserMsgMap[msgObj.userName] = msgObj.msgText; //record pre-message
-            userObj.preMsg = msgObj.msgText; //record pre-message
+            msgObj['preMsg'] = ""; 
         }
-    }    
+    }else{
+        userObj.preMsg = msgObj.msgText; //record pre-message
+    }
     return msgObj;
 }
